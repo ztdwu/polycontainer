@@ -2,7 +2,7 @@
 Containers of polymorphic types can sometimes be slow to iterate because the processor has to branch-predict which virtual function implementation to call. The PolyContainer is a container that can hold polymorphic objects in the same inheritance hierarchy, and place objects of the same derived type into its own buckets for better branch-prediction during iterations. 
 
 ## Benchmarks:
-Compiled with Clang 3.6 on Linux 4.3.3 x86_64
+These micro, unscientific benchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64
 ```
 Run on (2 X 2893.43 MHz CPU s)
 2016-01-08 21:04:24
