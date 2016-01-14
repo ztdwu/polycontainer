@@ -27,8 +27,8 @@ benchmark_polycontainer/8k      223341     224912       2727
 using polycontainer::PolyContainer;
 
 struct Base {
-	virtual ~Base() { }
-	virtual int compute() const = 0;
+    virtual ~Base() { }
+    virtual int compute() const = 0;
 };
 
 struct Derived1 : Base { int compute() const override { return 1; } };
@@ -36,13 +36,13 @@ struct Derived2 : Base { int compute() const override { return 2; } };
 // ...
 
 int main() {
-  auto container = PolyContainer<Base>{ };
-  container.push_back(std::make_unique<Derived1>()); 
-  container.push_back(std::make_unique<Derived2>()); 
-  // ...    
-  container.for_each([](const Base &item) {
-    std::cout << item.compute() << std::endl;
-  });
+    auto container = PolyContainer<Base>{ };
+    container.push_back(std::make_unique<Derived1>()); 
+    container.push_back(std::make_unique<Derived2>()); 
+    // ...    
+    container.for_each([](const Base &item) {
+        std::cout << item.compute() << std::endl;
+    });
 }
 ```
 
