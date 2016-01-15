@@ -21,8 +21,8 @@ private:
 
 /** ctors and dtor*/
 public:
-    ContiguousPolyContainer()  = default;
-    ~ContiguousPolyContainer() = default;
+    ContiguousPolyContainer() noexcept = default;
+    ~ContiguousPolyContainer()         = default;
 
     ContiguousPolyContainer(ContiguousPolyContainer &&) noexcept        = default;
     ContiguousPolyContainer(const ContiguousPolyContainer &)            = delete;
@@ -32,7 +32,7 @@ public:
 /** Public methods for insertion and iteration */
 public:
     template <typename Derived>
-    inline void push_back(Derived &&d) {
+    auto push_back(Derived &&d) -> Base& {
         static_assert(std::is_base_of<Base, std::remove_reference_t<Derived>>::value,
             "Cannot insert an object that does not derive from the base.");
 
@@ -40,11 +40,14 @@ public:
         if ( !segment ) {
             segment.reset(new Segment<Derived>);
         }
-        segment->push_back(std::forward<Derived>(d));
+        auto &result = segment->push_back(std::forward<Derived>(d));
+
+        length += 1;
+        return result;
     }
 
     template <typename Func>
-    inline void for_each(const Func &f) {
+    void for_each(const Func &f) {
         for ( auto &keyval : segments ) {
             auto &segment = *keyval.second;
             segment.for_each(f);
@@ -52,8 +55,12 @@ public:
     }
 
     template <typename Func>
-    inline void for_each(const Func &f) const {
+    void for_each(const Func &f) const {
         const_cast<ContiguousPolyContainer &>(*this).for_each(f);
+    }
+
+    auto len() const -> size_t {
+        return length;
     }
 
 
@@ -61,6 +68,7 @@ public:
 private:
     using Pointer = std::unique_ptr<SegmentI>;
     std::unordered_map<std::type_index, Pointer> segments;
+    size_t length = 0u;
 
 
 /** Private helper classes */
@@ -71,8 +79,9 @@ private:
     public:
         virtual ~SegmentI() = default;
 
-        virtual void push_back(const Base &)                             = 0;
-        virtual void push_back(Base &&)                                  = 0;
+        virtual auto push_back(const Base &) -> Base& = 0;
+        virtual auto push_back(Base &&)      -> Base& = 0;
+
         virtual void for_each(const std::function<void(Base &)> &)       = 0;
         virtual void for_each(const std::function<void(Base &)> &) const = 0;
     };
@@ -86,14 +95,16 @@ private:
         Segment()           noexcept = default;
         Segment(Segment &&) noexcept = default;
 
-        void push_back(const Base &base) override {
+        auto push_back(const Base &base) -> Base& override {
             const auto &item = static_cast<const Derived &>(base);
             vec.push_back(item);
+            return vec.back();
         }
 
-        void push_back(Base &&base) override {
+        auto push_back(Base &&base) -> Base& override {
             auto &&item = static_cast<Derived &&>(base);
             vec.push_back(std::move(item));
+            return vec.back();
         }
 
         void for_each(const std::function<void(Base &)> &f) override {
