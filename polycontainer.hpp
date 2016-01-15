@@ -59,6 +59,11 @@ public:
         return length;
     }
 
+    void clear() {
+        segments.clear();
+        length = 0u;
+    }
+
 
 /** Data members */
 private:

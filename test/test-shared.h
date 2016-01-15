@@ -48,17 +48,6 @@ public:
         container.push_back(make_derived<D1>());
     };
 
-    static auto empty() -> bool {
-        auto container = make_container();
-        return container.len() == 0u;
-    }
-
-    static auto len() -> bool {
-        auto container = make_container();
-        container.push_back(make_derived<D1>());
-        return container.len() == 1u;
-    }
-
     static auto for_each() -> bool {
         auto container = make_container();
         container.push_back(make_derived<D1>());
@@ -84,6 +73,31 @@ public:
         auto container = make_container();
         container.push_back(make_derived<D1>());
         return container.template get_segment<D1>().size() == 1u;
+    }
+
+    static auto empty() -> bool {
+        auto container = make_container();
+        return container.len() == 0u;
+    }
+
+    static auto len() -> bool {
+        auto container = make_container();
+        container.push_back(make_derived<D1>());
+        return container.len() == 1u;
+    }
+
+    static auto clear_empty() -> bool {
+        auto container = make_container();
+        container.clear();
+        return container.len() == 0u;
+    }
+
+    static auto clear() -> bool {
+        auto container = make_container();
+        container.push_back(make_derived<D1>());
+        container.push_back(make_derived<D2>());
+        container.clear();
+        return container.len() == 0u;
     }
 
 

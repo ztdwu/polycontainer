@@ -53,10 +53,6 @@ public:
         const_cast<ContiguousPolyContainer &>(*this).for_each(f);
     }
 
-
-    /**
-     * Returns the underlying vector
-     */
     template <typename Derived>
     auto& get_segment() {
         static_assert(std::is_base_of<Base, std::remove_reference_t<Derived>>::value,
@@ -71,6 +67,11 @@ public:
 
     auto len() const -> size_t {
         return length;
+    }
+
+    void clear() {
+        segments.clear();
+        length = 0u;
     }
 
 

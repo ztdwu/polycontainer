@@ -40,3 +40,10 @@ TEST_CASE( "non-contiguous get_segment", "[PolyContainer]" ) {
     REQUIRE( Tester::get_segment() );
 }
 
+TEST_CASE( "non-contiguous clear_empty", "[PolyContainer]" ) {
+    REQUIRE( Tester::clear_empty() );
+}
+
+TEST_CASE( "non-contiguous clear", "[PolyContainer]" ) {
+    REQUIRE( Tester::clear() );
+}
