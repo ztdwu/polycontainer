@@ -25,9 +25,9 @@ public:
 /** Public methods for insertion and iteration */
 public:
     template <typename Derived>
-    inline void push_back(std::unique_ptr<Derived> d) {
+    inline void push_back(std::unique_ptr<Derived> item) {
         static_assert(std::is_base_of<Base, Derived>::value, "Cannot insert an object that does not derive from the base.");
-        segments[typeid(d)].push_back(std::move(d));
+        segments[typeid(Derived)].push_back(std::move(item));
     }
 
     template <typename Func>
