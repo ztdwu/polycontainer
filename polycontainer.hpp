@@ -26,10 +26,7 @@ public:
 public:
     template <typename Derived>
     auto& push_back(std::unique_ptr<Derived> item) {
-        static_assert(std::is_base_of<Base, Derived>::value,
-                      "Cannot insert an object that does not derive from the base.");
-
-        auto &vec = segments[typeid(Derived)];
+        auto &vec = get_segment<Derived>();
         vec.push_back(std::move(item));
 
         length += 1;
@@ -48,6 +45,14 @@ public:
     template <typename Func>
     void for_each(const Func &f) const {
         const_cast<PolyContainer &>(*this).for_each(f);
+    }
+
+    template <typename Derived>
+    auto& get_segment() {
+        static_assert(std::is_base_of<Base, Derived>::value,
+                      "Cannot insert an object that does not derive from the base.");
+
+        return segments[typeid(Derived)];
     }
 
     auto len() const -> size_t {

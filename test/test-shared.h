@@ -75,9 +75,20 @@ public:
         return std::equal(seen.begin(), seen.end(), expected);
     }
 
+    static auto get_segment_empty() -> bool {
+        auto container = make_container();
+        return container.template get_segment<D1>().size() == 0u;
+    }
+
+    static auto get_segment() -> bool {
+        auto container = make_container();
+        container.push_back(make_derived<D1>());
+        return container.template get_segment<D1>().size() == 1u;
+    }
+
 
 /** Factory functions */
-private:
+public:
     static auto make_container() {
         return Container{ };
     }
@@ -95,4 +106,5 @@ private:
     make_derived() {
         return Derived{ };
     }
+
 };

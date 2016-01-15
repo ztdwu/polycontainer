@@ -31,3 +31,12 @@ TEST_CASE( "non-contiguous len", "[PolyContainer]" ) {
 TEST_CASE( "non-contiguous for_each", "[PolyContainer]" ) {
     REQUIRE( Tester::for_each() );
 }
+
+TEST_CASE( "non-contiguous get_segment_empty", "[PolyContainer]" ) {
+    REQUIRE( Tester::get_segment_empty() );
+}
+
+TEST_CASE( "non-contiguous get_segment", "[PolyContainer]" ) {
+    REQUIRE( Tester::get_segment() );
+}
+
