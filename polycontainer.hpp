@@ -32,8 +32,8 @@ public:
 
     template <typename Func>
     inline void for_each(const Func &f) {
-        for ( const auto &segment : segments ) {
-            for ( const auto &item : segment.second ) {
+        for ( auto &keyval : segments ) {
+            for ( auto &item : keyval.second ) {
                 f(*item);
             }
         }

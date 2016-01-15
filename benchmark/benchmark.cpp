@@ -73,7 +73,7 @@ auto generate_container(const int size) {
 
 template <typename Container>
 void do_work(const Container &c) {
-    c.for_each([](const Base &item) {
+    c.for_each([](const auto &item) {
         item.compute();
     });
 }
