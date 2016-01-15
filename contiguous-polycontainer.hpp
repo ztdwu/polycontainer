@@ -32,11 +32,6 @@ public:
 /** Public methods for insertion and iteration */
 public:
     template <typename Derived>
-    inline void push_back(const Derived &d) {
-        get_segment(d)->push_back(d);
-    }
-
-    template <typename Derived>
     inline void push_back(Derived &&d) {
         get_segment(d)->push_back(std::forward<Derived>(d));
     }

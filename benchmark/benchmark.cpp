@@ -99,7 +99,7 @@ void benchmark_container(benchmark::State& state) {
 
 
 enum iterations {
-    min = 1 << 5,
+    min = 1 << 4,
     max = 1 << 20
 };
 
