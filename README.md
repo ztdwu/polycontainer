@@ -65,3 +65,21 @@ int main() {
     });
 }
 ```
+
+### Mini Documentation:
+```c++
+// inserts and returns a reference to the inserted value
+container.push_back(item);
+
+// calls the lambda for each item in the container
+container.for_each([](auto &item) { });
+
+// returns a reference to the underlying vector that holds all items of DerivedType
+container.get_segment<DerivedType>();
+
+// returns the total number of items in the container
+container.len();
+
+// removes all items
+container.clear();
+```
