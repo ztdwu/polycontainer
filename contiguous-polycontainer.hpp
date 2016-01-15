@@ -33,7 +33,14 @@ public:
 public:
     template <typename Derived>
     inline void push_back(Derived &&d) {
-        get_segment(d)->push_back(std::forward<Derived>(d));
+        static_assert(std::is_base_of<Base, std::remove_reference_t<Derived>>::value,
+            "Cannot insert an object that does not derive from the base.");
+
+        auto &segment = segments[typeid(d)];
+        if ( !segment ) {
+            segment.reset(new Segment<Derived>);
+        }
+        segment->push_back(std::forward<Derived>(d));
     }
 
     template <typename Func>
@@ -47,20 +54,6 @@ public:
     template <typename Func>
     inline void for_each(const Func &f) const {
         const_cast<ContiguousPolyContainer &>(*this).for_each(f);
-    }
-
-/** Private methods */
-private:
-    template <typename Derived>
-    inline auto &get_segment(const Derived &d) {
-        static_assert(std::is_base_of<Base, std::remove_reference_t<Derived>>::value,
-            "Cannot insert an object that does not derive from the base.");
-
-        auto &segment = segments[typeid(d)];
-        if ( !segment ) {
-            segment.reset(new Segment<Derived>);
-        }
-        return segment;
     }
 
 
