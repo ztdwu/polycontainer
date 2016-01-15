@@ -1,7 +1,7 @@
 # PolyContainer
 Containers of polymorphic types can often be slow to iterate because the processor has to branch-predict which virtual function implementation to call. As well, polymorphics types are usually stored non-contiguously through pointers, which is severely cache-unfriendly as it hampers the processor's ability to predict and prefetch the next block of data. PolyContainer is a container based on the ideas in an excellent [blog post] (http://bannalia.blogspot.ca/2014/05/fast-polymorphic-collections.html) (a must read) by Joaquín M López Muñoz. It stores objects of each derived type contiguously in its own bucket.
 
-In addition to the contiguous polymorphic container (ContinuousPolyContainer), there's also a non-contiguous version (PolyContainer) which, instead of laying out objects next to each other in memory, stores smart pointers to these objects. This allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly, but loses the huge benefit of cache locality.
+In addition to the contiguous polymorphic container (ContinuousPolyContainer), there's also a non-contiguous version (PolyContainer) which, instead of laying out objects next to each other in memory, stores smart pointers to these objects. This allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly (up to a certain size, see below), but loses the huge benefit of cache locality.
 
 ### Benchmarks (linear iteration):
 These micro, unscientific benchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64
@@ -35,7 +35,7 @@ polycontainer_contiguous/32k            155,236      157,670        4038
 polycontainer_contiguous/256k         1,352,541    1,249,984         568
 polycontainer_contiguous/1024k        5,031,790    5,080,621         124
 ```
-ContiguousPolyContainer is by far the fastest, and appears to scale linearly with the number of elements. The non-contiguous PolyContainer is a significantly faster than std_vector up until around 32k elements, after which its performance starts to degrade.
+ContiguousPolyContainer is by far the fastest, and appears to scale linearly with the number of elements. The non-contiguous PolyContainer is a significantly faster than std_vector up until around 32k elements, after which its performance starts to degrade severely.
 
 
 ### Example:
