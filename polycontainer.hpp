@@ -53,7 +53,7 @@ public:
         return segments[typeid(Derived)];
     }
 
-    auto len() const -> size_t {
+    auto len() const {
         size_t length = 0u;
         for ( const auto &keyval : segments ) {
             length += keyval.second.size();

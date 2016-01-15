@@ -26,7 +26,7 @@ public:
 
     ContiguousPolyContainer(ContiguousPolyContainer &&) noexcept        = default;
     ContiguousPolyContainer(const ContiguousPolyContainer &)            = delete;
-    ContiguousPolyContainer &operator=(const ContiguousPolyContainer &) = delete;
+    ContiguousPolyContainer& operator=(const ContiguousPolyContainer &) = delete;
 
 
 /** Public methods for insertion and iteration */
@@ -63,7 +63,7 @@ public:
         return static_cast<Segment<Derived> &>(*segment).vec;
     }
 
-    auto len() const -> size_t {
+    auto len() const {
         size_t length = 0u;
         for ( const auto &keyval : segments ) {
             length += keyval.second->len();
