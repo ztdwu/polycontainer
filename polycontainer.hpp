@@ -28,8 +28,6 @@ public:
     auto& push_back(std::unique_ptr<Derived> item) {
         auto &vec = get_segment<Derived>();
         vec.push_back(std::move(item));
-
-        length += 1;
         return vec.back();
     }
 
@@ -56,12 +54,15 @@ public:
     }
 
     auto len() const -> size_t {
+        size_t length = 0u;
+        for ( const auto &keyval : segments ) {
+            length += keyval.second.size();
+        }
         return length;
     }
 
     void clear() {
         segments.clear();
-        length = 0u;
     }
 
 
@@ -69,7 +70,6 @@ public:
 private:
     using Segment = std::vector<std::unique_ptr<Base>>;
     std::unordered_map<std::type_index, Segment> segments;
-    size_t length = 0;
 };
 
 }

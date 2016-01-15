@@ -35,8 +35,6 @@ public:
     auto& push_back(Derived &&d) {
         auto &segment = get_segment<Derived>();
         segment.push_back(std::forward<Derived>(d));
-
-        length += 1;
         return segment.back();
     }
 
@@ -66,12 +64,15 @@ public:
     }
 
     auto len() const -> size_t {
+        size_t length = 0u;
+        for ( const auto &keyval : segments ) {
+            length += keyval.second->len();
+        }
         return length;
     }
 
     void clear() {
         segments.clear();
-        length = 0u;
     }
 
 
@@ -79,7 +80,6 @@ public:
 private:
     using Pointer = std::unique_ptr<SegmentI>;
     std::unordered_map<std::type_index, Pointer> segments;
-    size_t length = 0u;
 
 
 /** Private helper classes */
@@ -90,9 +90,10 @@ private:
     public:
         virtual ~SegmentI() = default;
 
+        virtual auto len() const -> size_t = 0;
+
         virtual void for_each(const std::function<void(Base &)> &)       = 0;
         virtual void for_each(const std::function<void(Base &)> &) const = 0;
-
     };
 
     /** Segment impl must be separated from its interface
@@ -104,6 +105,10 @@ private:
         Segment()           noexcept = default;
         Segment(Segment &&) noexcept = default;
 
+        auto len() const -> size_t override {
+            return vec.size();
+        }
+
         void for_each(const std::function<void(Base &)> &f) override {
             for ( auto &item : vec ) {
                 f(item);
@@ -113,7 +118,6 @@ private:
         void for_each(const std::function<void(Base &)> &f) const override {
             const_cast<Segment<Derived> &>(*this).for_each(f);
         }
-
 
     public:
         std::vector<Derived> vec;
