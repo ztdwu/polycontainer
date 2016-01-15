@@ -38,6 +38,24 @@ polycontainer_contiguous/1024k        5,031,790    5,080,621         124
 ContiguousPolyContainer is by far the fastest, and appears to scale linearly with the number of elements. The non-contiguous PolyContainer is a significantly faster than std_vector up until around 32k elements, after which its performance starts to degrade severely.
 
 
+### Mini Documentation:
+```c++
+// inserts and returns a reference to the inserted value
+container.push_back(item);
+
+// calls the lambda for each item in the container
+container.for_each([](auto &item) { });
+
+// returns a reference to the underlying vector that holds all items of DerivedType
+container.get_segment<DerivedType>();
+
+// returns the total number of items in the container
+container.len();
+
+// removes all items
+container.clear();
+```
+
 ### Example:
 ```c++
 #include "polycontainer.hpp"
@@ -66,20 +84,3 @@ int main() {
 }
 ```
 
-### Mini Documentation:
-```c++
-// inserts and returns a reference to the inserted value
-container.push_back(item);
-
-// calls the lambda for each item in the container
-container.for_each([](auto &item) { });
-
-// returns a reference to the underlying vector that holds all items of DerivedType
-container.get_segment<DerivedType>();
-
-// returns the total number of items in the container
-container.len();
-
-// removes all items
-container.clear();
-```
