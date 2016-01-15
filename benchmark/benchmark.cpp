@@ -100,7 +100,7 @@ void benchmark_container(benchmark::State& state) {
 
 enum iterations {
     min = 1 << 5,
-    max = 1 << 16
+    max = 1 << 20
 };
 
 const auto std_vector               = benchmark_container<std::vector<std::unique_ptr<Base>>>;
@@ -111,4 +111,4 @@ BENCHMARK(std_vector)              ->Range(min, max);
 BENCHMARK(polycontainer_pointers)  ->Range(min, max);
 BENCHMARK(polycontainer_contiguous)->Range(min, max);
 
-BENCHMARK_MAIN();
+BENCHMARK_MAIN()
