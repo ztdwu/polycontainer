@@ -38,21 +38,21 @@ public:
         }
         {
             auto container = make_container();
-            container.push_back(make_derived<D1>());
+            insert<D1>(container);
             Container{ std::move(container) };
         }
     }
 
     static void push_back() {
         auto container = make_container();
-        container.push_back(make_derived<D1>());
+        insert<D1>(container);
     };
 
     static auto for_each() -> bool {
         auto container = make_container();
-        container.push_back(make_derived<D1>());
-        container.push_back(make_derived<D2>());
-        container.push_back(make_derived<D3>());
+        insert<D1>(container);
+        insert<D2>(container);
+        insert<D3>(container);
 
         auto seen = std::vector<int>{ };
         container.for_each([&seen](const auto &item) {
@@ -71,7 +71,7 @@ public:
 
     static auto get_segment() -> bool {
         auto container = make_container();
-        container.push_back(make_derived<D1>());
+        insert<D1>(container);
         return container.template get_segment<D1>().size() == 1u;
     }
 
@@ -82,7 +82,7 @@ public:
 
     static auto len() -> bool {
         auto container = make_container();
-        container.push_back(make_derived<D1>());
+        insert<D1>(container);
         return container.len() == 1u;
     }
 
@@ -94,8 +94,8 @@ public:
 
     static auto clear() -> bool {
         auto container = make_container();
-        container.push_back(make_derived<D1>());
-        container.push_back(make_derived<D2>());
+        insert<D1>(container);
+        insert<D2>(container);
         container.clear();
         return container.len() == 0u;
     }
@@ -108,17 +108,22 @@ public:
     }
 
     template <typename Derived>
-    static typename std::enable_if<std::is_same<Container, PolyContainer<Base>>::value,
-                                   std::unique_ptr<Derived>>::type
-    make_derived() {
+    static auto make_derived() ->
+        std::enable_if_t<std::is_same<Container, PolyContainer<Base>>::value, std::unique_ptr<Derived>>
+    {
         return std::make_unique<Derived>();
     }
 
     template <typename Derived>
-    static typename std::enable_if<std::is_same<Container, ContiguousPolyContainer<Base>>::value,
-                                   Derived>::type
-    make_derived() {
+    static auto make_derived() ->
+        std::enable_if_t<std::is_same<Container, ContiguousPolyContainer<Base>>::value, Derived>
+    {
         return Derived{ };
+    }
+
+    template <typename Derived>
+    static auto insert(Container &container) {
+        container.push_back(make_derived<Derived>());
     }
 
 };
