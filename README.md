@@ -67,16 +67,16 @@ struct Base {
     virtual int compute() const = 0;
 };
 
-struct Derived1 : Base { int compute() const override { return 1; } };
-struct Derived2 : Base { int compute() const override { return 2; } };
+struct D1 : Base { int compute() const override { return 1; } };
+struct D2 : Base { int compute() const override { return 2; } };
 // ...
 
 int main() {
     auto container = PolyContainer<Base>{ };
-    container.push_back(std::make_unique<Derived1>());
-    container.push_back(std::make_unique<Derived2>());
+    container.push_back(std::make_unique<D1>());
+    container.push_back(std::make_unique<D2>());
     // ...
-    // container.push_back(Derived2{ }); for ContiguousPolyContainer
+    // container.push_back(D2{ }); for ContiguousPolyContainer
 
     container.for_each([](const Base &item) {
         std::cout << item.compute() << std::endl;

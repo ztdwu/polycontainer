@@ -22,12 +22,12 @@ struct Base {
     virtual int compute() const = 0;
 };
 
-struct Derived1 : Base { int compute() const override { return 1; } };
-struct Derived2 : Base { int compute() const override { return 2; } };
-struct Derived3 : Base { int compute() const override { return 3; } };
-struct Derived4 : Base { int compute() const override { return 4; } };
-struct Derived5 : Base { int compute() const override { return 5; } };
-struct Derived6 : Base { int compute() const override { return 6; } };
+struct D1 : Base { int compute() const override { return 1; } };
+struct D2 : Base { int compute() const override { return 2; } };
+struct D3 : Base { int compute() const override { return 3; } };
+struct D4 : Base { int compute() const override { return 4; } };
+struct D5 : Base { int compute() const override { return 5; } };
+struct D6 : Base { int compute() const override { return 6; } };
 
 template<typename Container>
 auto create_container() {
@@ -36,35 +36,38 @@ auto create_container() {
 
 template<typename Container, typename Derived>
 auto create_derived() ->
-    typename std::enable_if<std::is_same<Container, ContiguousPolyContainer<Base>>::value,
-                            Derived>::type
+    std::enable_if_t<std::is_same<Container, ContiguousPolyContainer<Base>>::value, Derived>
 {
     return Derived{ };
 }
 
 template<typename Container, typename Derived>
 auto create_derived() ->
-    typename std::enable_if<not std::is_same<Container, ContiguousPolyContainer<Base>>::value,
-                            std::unique_ptr<Derived>>::type
+    std::enable_if_t<not std::is_same<Container, ContiguousPolyContainer<Base>>::value, std::unique_ptr<Derived>>
 {
     return std::make_unique<Derived>();
+}
+
+template<typename Derived, typename Container>
+auto insert(Container &container) {
+    container.push_back(create_derived<Container, Derived>());
 }
 
 template <typename Container>
 auto generate_container(const int size) {
     auto container    = create_container<Container>();
-    auto generator    = std::mt19937_64 { std::random_device{ }() };
+    auto generator    = std::mt19937{ std::random_device{ }() };
     auto distribution = std::uniform_int_distribution<>(1, 6);
 
     for ( auto _ = 0; _ < size; _++ ) {
         const auto id = distribution(generator);
         switch ( id ) {
-            case 1 : container.push_back(create_derived<Container, Derived1>()); break;
-            case 2 : container.push_back(create_derived<Container, Derived2>()); break;
-            case 3 : container.push_back(create_derived<Container, Derived3>()); break;
-            case 4 : container.push_back(create_derived<Container, Derived4>()); break;
-            case 5 : container.push_back(create_derived<Container, Derived5>()); break;
-            case 6 : container.push_back(create_derived<Container, Derived6>()); break;
+            case 1 : insert<D1>(container); break;
+            case 2 : insert<D2>(container); break;
+            case 3 : insert<D3>(container); break;
+            case 4 : insert<D4>(container); break;
+            case 5 : insert<D5>(container); break;
+            case 6 : insert<D6>(container); break;
             default : assert(false && "unreachable");
         }
     }
