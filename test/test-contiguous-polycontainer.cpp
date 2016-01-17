@@ -3,7 +3,7 @@
 
 #include "../contiguous-polycontainer.hpp"
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 
 using Tester = Test<ContiguousPolyContainer<Base>>;

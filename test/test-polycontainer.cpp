@@ -3,7 +3,7 @@
 
 #include "../polycontainer.hpp"
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 
 using Tester = Test<PolyContainer<Base>>;

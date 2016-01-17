@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <vector>
 
-#include <catch.hpp>
+#include "catch.hpp"
 
 
 using polycontainer::PolyContainer;
