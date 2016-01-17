@@ -32,10 +32,39 @@ using ContiguousPolyContainer = polycontainer::ContiguousPolyContainer<Base>;
 
 
 template <typename Container>
-struct Bench {
+class Bench {
 
-    static auto create_container() {
-        return Container{ };
+public:
+    static void benchmark(benchmark::State& state) {
+        while (state.KeepRunning()) {
+
+            state.PauseTiming();
+            const auto container = generate_container(state.range_x());
+
+            state.ResumeTiming();
+            do_work(container);
+        }
+    }
+
+private:
+    static auto generate_container(const int size) {
+        auto container    = Container{ };
+        auto generator    = std::mt19937{ std::random_device{ }() };
+        auto distribution = std::uniform_int_distribution<>(1, 6);
+
+        for ( auto _ = 0; _ < size; _++ ) {
+            const auto id = distribution(generator);
+            switch ( id ) {
+                case 1 : insert<D1>(container); break;
+                case 2 : insert<D2>(container); break;
+                case 3 : insert<D3>(container); break;
+                case 4 : insert<D4>(container); break;
+                case 5 : insert<D5>(container); break;
+                case 6 : insert<D6>(container); break;
+                default : assert(false && "unreachable");
+            }
+        }
+        return container;
     }
 
     template <typename Derived>
@@ -57,50 +86,18 @@ struct Bench {
         container.push_back(create_derived<Derived>());
     }
 
-    static auto generate_container(const int size) {
-        auto container    = create_container();
-        auto generator    = std::mt19937{ std::random_device{ }() };
-        auto distribution = std::uniform_int_distribution<>(1, 6);
-
-        for ( auto _ = 0; _ < size; _++ ) {
-            const auto id = distribution(generator);
-            switch ( id ) {
-                case 1 : insert<D1>(container); break;
-                case 2 : insert<D2>(container); break;
-                case 3 : insert<D3>(container); break;
-                case 4 : insert<D4>(container); break;
-                case 5 : insert<D5>(container); break;
-                case 6 : insert<D6>(container); break;
-                default : assert(false && "unreachable");
-            }
-        }
-        return container;
-    }
-
     static void do_work(const Container &c) {
         c.for_each([](const auto &item) {
             item.get();
         });
     }
-
-    static void benchmark(benchmark::State& state) {
-        while (state.KeepRunning()) {
-
-            state.PauseTiming();
-            const auto container = generate_container(state.range_x());
-
-            state.ResumeTiming();
-            do_work(container);
-        }
-    }
-
 };
 
 template <>
 void Bench<StdVectorContainer>::do_work(const StdVectorContainer &c) {
-    std::for_each(c.cbegin(), c.cend(), [](const auto &item) {
+    for ( const auto &item : c ) {
         item->get();
-    });
+    }
 }
 
 
