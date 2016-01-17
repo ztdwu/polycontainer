@@ -4,25 +4,24 @@ addons:
     apt:
         sources:
             - llvm-toolchain-precise-3.6
+            - llvm-toolchain-precise-3.7
             - ubuntu-toolchain-r-test
         packages:
             - clang-3.6
+            - clang-3.7
             - g++-5
 
 install:
-    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
-    - sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-3.6 100
+    - sudo update-alternatives --install $(which g++)     g++     $(which g++-5)       100
+    - sudo update-alternatives --install $(which clang++) clang++ $(which clang++-3.6) 100
+    - g++ -v
     - clang++ -v
-    - cd test/
-    - ./download-dependencies.sh
 
 script:
+    - cd test/
+    - ./download-dependencies.sh
     - make
     - ./test
-
-branches:
-    only:
-        - master
 
 notifications:
     email:

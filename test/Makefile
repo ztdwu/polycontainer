@@ -1,4 +1,4 @@
-CC = g++
+CC = clang++
 
 DEFAULT_FLAGS = -std=c++14
 
