@@ -35,7 +35,9 @@ polycontainer_contiguous/32k            155,236      157,670        4038
 polycontainer_contiguous/256k         1,352,541    1,249,984         568
 polycontainer_contiguous/1024k        5,031,790    5,080,621         124
 ```
-ContiguousPolyContainer is by far the fastest, and appears to scale linearly with the number of elements. The non-contiguous PolyContainer is a significantly faster than std_vector up until around 32k elements, after which its performance starts to degrade severely.
+`ContiguousPolyContainer` is by far the fastest, and appears to scale linearly with the number of elements.
+
+The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution. 
 
 
 ### Mini Documentation:
