@@ -62,7 +62,7 @@ container.clear();
 ```c++
 #include "polycontainer.hpp"
 #include <iostream>
-using polycontainer::PolyContainer;
+using polycontainer::ContiguousPolyContainer;
 
 struct Base {
     virtual ~Base() { }
@@ -74,11 +74,11 @@ struct D2 : Base { int compute() const override { return 2; } };
 // ...
 
 int main() {
-    auto container = PolyContainer<Base>{ };
-    container.push_back(std::make_unique<D1>());
-    container.push_back(std::make_unique<D2>());
+    auto container = ContiguousPolyContainer<Base>{ };
+    container.push_back(D1{ });
+    container.push_back(D2{ });
+    // container.push_back(std::make_unique<D2>()); for the non-contiguous PolyContainer
     // ...
-    // container.push_back(D2{ }); for ContiguousPolyContainer
 
     container.for_each([](const Base &item) {
         std::cout << item.compute() << std::endl;
