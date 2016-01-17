@@ -12,7 +12,7 @@
 
 // Requires google's benchmark framework https://github.com/google/benchmark
 // Must compile with -lpthread
-#include <benchmark/benchmark.h>
+#include "benchmark/benchmark.h"
 
 using polycontainer::PolyContainer;
 using polycontainer::ContiguousPolyContainer;

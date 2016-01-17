@@ -1,4 +1,14 @@
+## build files
 bake-build
 build
-catch.hpp
 
+## dependencies
+dependencies
+catch.hpp
+catch.hpp.*
+
+## objects and executables
+a.out
+test
+benchmark
+*.o
