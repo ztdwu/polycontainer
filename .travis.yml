@@ -22,7 +22,7 @@ script:
 
 branches:
     only:
-        - travis_test
+        - master
 
 notifications:
     email:
