@@ -47,3 +47,18 @@ TEST_CASE( "contiguous clear_empty", "[ContiguousPolyContainer]" ) {
 TEST_CASE( "contiguous clear", "[ContiguousPolyContainer]" ) {
     REQUIRE( Tester::clear() );
 }
+
+TEST_CASE( "contiguous by ref push_back", "[ContiguousPolyContainer]" ) {
+    auto container = ContiguousPolyContainer<Base>{ };
+
+    auto item1 = D1{ };
+    REQUIRE_NOTHROW( container.push_back(item1) );
+
+    const auto item2 = D1{ };
+    REQUIRE_NOTHROW( container.push_back(item2) );
+
+    REQUIRE( container.len() == 2u );
+
+    const auto &vec = container.get_segment<D1>();
+    REQUIRE( vec.size() == container.len() );
+}

@@ -34,9 +34,14 @@ public:
 public:
     template <typename Derived>
     auto& push_back(Derived &&d) {
-        auto &segment = get_segment<Derived>();
+        auto &segment = get_segment<std::remove_reference_t<Derived>>();
         segment.push_back(std::forward<Derived>(d));
         return segment.back();
+    }
+
+    template <typename Derived>
+    auto& push_back(const Derived &d) {
+        return push_back(const_cast<Derived &>(d));
     }
 
     template <typename Func>
