@@ -84,3 +84,10 @@ int main() {
 }
 ```
 
+### Tests
+To run the benchmark or the unit tests, `cd` into the `benchmark` or `test` directory and run:
+```bash
+./download-dependencies.sh
+make
+./test ## or ./benchmark depending on the currect directory
+```
