@@ -3,7 +3,7 @@ Containers of polymorphic types can often be slow to iterate because the process
 
 In addition to the contiguous polymorphic container (ContinuousPolyContainer), there's also a non-contiguous version (PolyContainer) which, instead of laying out objects next to each other in memory, stores smart pointers to these objects. This allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly (up to a certain size, see below), but loses the huge benefit of cache locality.
 
-### Benchmarks (linear iteration):
+## Benchmarks (linear iteration):
 These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64
 
 Execution time:
@@ -83,7 +83,7 @@ ContiguousPolyContainer
 The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution.
 
 
-### Mini Documentation:
+## Mini Documentation:
 ```c++
 // inserts and returns a reference to the inserted value
 container.push_back(item);
@@ -101,7 +101,7 @@ container.len();
 container.clear();
 ```
 
-### Example:
+## Example:
 ```c++
 #include "polycontainer.hpp"
 #include <iostream>
@@ -129,8 +129,8 @@ int main() {
 }
 ```
 
-### Tests
-To run the unit tests:
+## Running the tests
+unit tests:
 ```
 cd test
 ./download-dependencies.sh
@@ -138,7 +138,7 @@ make
 ./test
 ```
 
-To run the execution time benchmark:
+execution time benchmark:
 ```
 cd benchmark/benchmark-time
 ./download-dependencies.sh
@@ -146,7 +146,7 @@ make
 ./benchmark
 ```
 
-To run the branch-misses and cache-misses benchmark: (Note: depends on the Linux-specific tool `perf stat`)
+branch-misses and cache-misses benchmark: (Note: depends on the Linux-specific tool `perf stat`)
 ```
 cd benchmark/benchmark-branch-cache
 make
