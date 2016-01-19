@@ -131,7 +131,7 @@ int main() {
 
 ### Tests
 To run the unit tests:
-```bash
+```
 cd test
 ./download-dependencies.sh
 make
@@ -139,15 +139,15 @@ make
 ```
 
 To run the execution time benchmark:
-```bash
+```
 cd benchmark/benchmark-time
 ./download-dependencies.sh
 make
 ./benchmark
 ```
 
-To run the branch-misses and cache-misses benchmark: (Note that this benchmark depends on the Linux-specific tool `perf stat`)
-```bash
+To run the branch-misses and cache-misses benchmark: (Note: depends on the Linux-specific tool `perf stat`)
+```
 cd benchmark/benchmark-branch-cache
 make
 ./run-benchmark.sh
