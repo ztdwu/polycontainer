@@ -2,13 +2,9 @@
 
 set -e
 
-readonly min=10
+readonly min=100
 readonly max=10000000
 readonly exe="./benchmark"
-
-readonly vector="vector"
-readonly polycontainer="polycontainer"
-readonly contiguous_polycontainer="contiguous-polycontainer"
 
 declare -a vector_branch_misses=()
 declare -a polycontainer_branch_misses=()
@@ -42,15 +38,15 @@ run_perf() {
         exit 1
     fi
 
-    if [[ "$type" == "$vector" ]]; then
+    if [[ "$type" == "vector" ]]; then
         vector_cache_misses+=("$cache_misses")
         vector_branch_misses+=("$branch_misses")
 
-    elif [[ "$type" == "$polycontainer" ]]; then
+    elif [[ "$type" == "polycontainer" ]]; then
         polycontainer_cache_misses+=("$cache_misses")
         polycontainer_branch_misses+=("$branch_misses")
 
-    elif [[ "$type" == "$contiguous_polycontainer" ]]; then
+    elif [[ "$type" == "contiguous-polycontainer" ]]; then
         contiguous_polycontainer_cache_misses+=("$cache_misses")
         contiguous_polycontainer_branch_misses+=("$branch_misses")
     fi
@@ -66,20 +62,24 @@ measure() {
 }
 
 display_results() {
-    echo -e "\n------------------------------------------------"
+    echo -e "\n--------------------------------------------------------------------------"
     echo "$1"
-    printf "%15s %15s %15s\n" "size" "branch-misses" "cache-misses"
-    echo "------------------------------------------------"
+    printf "%16s %16s %16s %16s\n" "size" "std::vector" "PolyContainer" "ContiguousPolyContainer"
+    echo "--------------------------------------------------------------------------"
     local str="";
     local size=$min
 
-    declare -a branch_misses=("${!2}")
-    declare -a cache_misses=("${!3}")
+    declare -a vector=("${!2}")
+    declare -a polycontainer=("${!3}")
+    declare -a contiguous_polycontainer=("${!4}")
 
-    local -r trials="${#branch_misses[@]}"
+    local -r trials="${#vector[@]}"
 
     for i in $(seq 0 $((trials - 1))); do
-        printf "%15s %15s %15s\n" $(format_number "$size") "${branch_misses[$i]}" "${cache_misses[$i]}"
+        printf "%16s %16s %16s %16s\n" $(format_number "$size") \
+                                  "${vector[$i]}" \
+                                  "${polycontainer[$i]}" \
+                                  "${contiguous_polycontainer[$i]}"
         size=$(($size * 10));
     done
 }
@@ -94,9 +94,13 @@ main() {
     measure "polycontainer"
     measure "contiguous-polycontainer"
 
-    display_results "std::vector" vector_branch_misses[@] vector_cache_misses[@]
-    display_results "PolyContainer" polycontainer_branch_misses[@] polycontainer_cache_misses[@]
-    display_results "ContiguousPolyContainer" contiguous_polycontainer_branch_misses[@] contiguous_polycontainer_cache_misses[@]
+    display_results "branch-misses" vector_branch_misses[@] \
+                                    polycontainer_branch_misses[@] \
+                                    contiguous_polycontainer_branch_misses[@]
+
+    display_results "cache-misses" vector_cache_misses[@] \
+                                   polycontainer_cache_misses[@] \
+                                   contiguous_polycontainer_cache_misses[@]
     echo ""
 }
 
