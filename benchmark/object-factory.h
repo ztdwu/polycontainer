@@ -10,8 +10,6 @@
 #include <random>
 #include <vector>
 
-#include "benchmark/benchmark.h"
-
 
 struct Base {
     virtual ~Base() { }
@@ -32,21 +30,8 @@ using ContiguousPolyContainer = polycontainer::ContiguousPolyContainer<Base>;
 
 
 template <typename Container>
-class Bench {
-
+class ContainerFactory {
 public:
-    static void benchmark(benchmark::State& state) {
-        while (state.KeepRunning()) {
-
-            state.PauseTiming();
-            const auto container = generate_container(state.range_x());
-
-            state.ResumeTiming();
-            do_work(container);
-        }
-    }
-
-private:
     static auto generate_container(const int size) {
         auto container    = Container{ };
         auto generator    = std::mt19937{ std::random_device{ }() };
@@ -94,24 +79,8 @@ private:
 };
 
 template <>
-void Bench<StdVectorContainer>::do_work(const StdVectorContainer &c) {
+void ContainerFactory<StdVectorContainer>::do_work(const StdVectorContainer &c) {
     for ( const auto &item : c ) {
         item->get();
     }
 }
-
-
-enum iterations {
-    min = 1 << 4,
-    max = 1 << 20
-};
-
-const auto std_vector               = Bench<StdVectorContainer>     ::benchmark;
-const auto polycontainer_pointers   = Bench<PolyContainer>          ::benchmark;
-const auto polycontainer_contiguous = Bench<ContiguousPolyContainer>::benchmark;
-
-BENCHMARK(std_vector)              ->Range(min, max);
-BENCHMARK(polycontainer_pointers)  ->Range(min, max);
-BENCHMARK(polycontainer_contiguous)->Range(min, max);
-
-BENCHMARK_MAIN()

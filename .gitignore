@@ -9,6 +9,7 @@ catch.hpp.*
 
 ## objects and executables
 a.out
-test
-benchmark
+test/test
+benchmark/benchmark-time/benchmark
+benchmark/benchmark-branch-cache/benchmark
 *.o

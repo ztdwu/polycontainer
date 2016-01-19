@@ -4,7 +4,9 @@ Containers of polymorphic types can often be slow to iterate because the process
 In addition to the contiguous polymorphic container (ContinuousPolyContainer), there's also a non-contiguous version (PolyContainer) which, instead of laying out objects next to each other in memory, stores smart pointers to these objects. This allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly (up to a certain size, see below), but loses the huge benefit of cache locality.
 
 ### Benchmarks (linear iteration):
-These micro, unscientific benchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64
+These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64
+
+Execution time:
 ```
 Run on (2 X 2893.43 MHz CPU s)
 2016-01-14 22:44:21
@@ -35,9 +37,50 @@ polycontainer_contiguous/32k            155,236      157,670        4038
 polycontainer_contiguous/256k         1,352,541    1,249,984         568
 polycontainer_contiguous/1024k        5,031,790    5,080,621         124
 ```
-`ContiguousPolyContainer` is by far the fastest, and appears to scale linearly with the number of elements.
 
-The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution. 
+Branch and cache misses:
+```
+------------------------------------------------
+std::vector
+           size   branch-misses    cache-misses
+------------------------------------------------
+             10          21,123           7,630
+            100          21,517           7,515
+          1,000          23,909           7,664
+         10,000          47,053           7,597
+        100,000         273,931          20,171
+      1,000,000       2,537,514         212,903
+     10,000,000      25,144,774       2,575,036
+
+------------------------------------------------
+PolyContainer
+           size   branch-misses    cache-misses
+------------------------------------------------
+             10          21,047           8,255
+            100          21,653          10,432
+          1,000          22,797           8,601
+         10,000          38,201           8,511
+        100,000         151,677          62,957
+      1,000,000         898,388       1,955,493
+     10,000,000       9,152,191      19,607,472
+
+------------------------------------------------
+ContiguousPolyContainer
+           size   branch-misses    cache-misses
+------------------------------------------------
+             10          21,155           7,717
+            100          21,609           7,635
+          1,000          22,487           7,551
+         10,000          30,151           8,694
+        100,000         107,957          14,156
+      1,000,000         903,291          48,046
+     10,000,000       8,450,622         496,478
+
+```
+
+`ContiguousPolyContainer` appears to be easily the fastest, and seems scale linearly with the number of elements.
+
+The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution.
 
 
 ### Mini Documentation:
@@ -87,9 +130,25 @@ int main() {
 ```
 
 ### Tests
-To run the benchmark or the unit tests, `cd` into the `benchmark` or `test` directory and run:
+To run the unit tests:
 ```bash
+cd test
 ./download-dependencies.sh
 make
-./test ## or ./benchmark depending on the currect directory
+./test
+```
+
+To run the execution time benchmark:
+```bash
+cd benchmark/benchmark-time
+./download-dependencies.sh
+make
+./benchmark
+```
+
+To run the branch-misses and cache-misses benchmark: (Note that this benchmark depends on the Linux-specific tool `perf stat`)
+```bash
+cd benchmark/benchmark-branch-cache
+make
+./run-benchmark.sh
 ```
