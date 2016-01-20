@@ -1,6 +1,7 @@
 ## build files
 bake-build
 build
+.build
 
 ## dependencies
 dependencies

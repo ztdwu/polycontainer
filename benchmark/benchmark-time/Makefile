@@ -1,27 +1,35 @@
 CC = clang++
 
-DEFAULT_FLAGS = -std=c++14 -O3
+DEFAULT_FLAGS  = -std=c++14 -O3 -MMD -MP
 
-LIBRARY = dependencies/google-benchmark-framework/build
+LIBRARY        = dependencies/google-benchmark-framework/build
 
 LINKER_OPTIONS = -lpthread $(LIBRARY)/lib/libbenchmark.a -flto -fuse-ld=gold -O3
 
-INCLUDE = -I$(LIBRARY)/include -I../ -I../../
+INCLUDE        = -I$(LIBRARY)/include -I../ -I../../
 
-WARNINGS = -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wformat=2 -Wformat-nonliteral \
-		   -Wmissing-format-attribute -Wnon-virtual-dtor -Wsign-conversion
+WARNINGS       = -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wformat=2 -Wformat-nonliteral \
+		        -Wmissing-format-attribute -Wnon-virtual-dtor -Wsign-conversion
 
-FLAGS = $(DEFAULT_FLAGS) $(WARNINGS) $(INCLUDE)
+FLAGS          = $(DEFAULT_FLAGS) $(INCLUDE) $(WARNINGS) $(DEBUG) $(ASAN)
 
-EXE = benchmark
-SOURCES = $(wildcard *.cpp)
-OBJECTS = $(SOURCES:.cpp=.o)
+
+BUILD_DIR = .build
+SOURCES   = $(wildcard *.cpp)
+OBJECTS   = $(SOURCES:%.cpp=$(BUILD_DIR)/%.o)
+DEPS      = $(OBJECTS:.o=.d)
+EXE       = benchmark
 
 $(EXE): $(OBJECTS)
-	$(CC) $(OBJECTS) $(LINKER_OPTIONS) -o $(EXE)
+	$(CC) $(OBJECTS) $(ASAN) $(LINKER_OPTIONS) -o $(EXE)
 
-%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
 	$(CC) -c $(FLAGS) $< -o $@
 
+$(BUILD_DIR):
+	@mkdir $@
+
+-include $(DEPS)
+
 clean:
-	rm -f $(EXE) $(OBJECTS)
+	rm -rf $(EXE) $(BUILD_DIR)

@@ -1,4 +1,5 @@
-#include "test-polycontainer.h"
+#pragma once
+
 #include "../contiguous-polycontainer.hpp"
 #include "../polycontainer.hpp"
 
