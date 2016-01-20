@@ -22,12 +22,12 @@ enum iterations {
     max = 1 << 20
 };
 
-const auto std_vector               = run_benchmark<StdVectorContainer>;
-const auto polycontainer_pointers   = run_benchmark<PolyContainer>;
-const auto polycontainer_contiguous = run_benchmark<ContiguousPolyContainer>;
+const auto std_vector_              = run_benchmark<StdVectorContainer>;
+const auto PolyContainer_           = run_benchmark<PolyContainer>;
+const auto ContiguousPolyContainer_ = run_benchmark<ContiguousPolyContainer>;
 
-BENCHMARK(std_vector)              ->Range(min, max);
-BENCHMARK(polycontainer_pointers)  ->Range(min, max);
-BENCHMARK(polycontainer_contiguous)->Range(min, max);
+BENCHMARK(std_vector_)             ->Range(min, max);
+BENCHMARK(PolyContainer_)          ->Range(min, max);
+BENCHMARK(ContiguousPolyContainer_)->Range(min, max);
 
 BENCHMARK_MAIN()

@@ -4,63 +4,54 @@ Containers of polymorphic types can often be slow to iterate because the process
 In addition to the contiguous polymorphic container (ContinuousPolyContainer), there's also a non-contiguous version (PolyContainer) which, instead of laying out objects next to each other in memory, stores smart pointers to these objects. This allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly (up to a certain size, see below), but loses the huge benefit of cache locality.
 
 ## Benchmarks (linear iteration):
-These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64
+These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 2400.09 MHz CPU s)
 
 Execution time:
 ```
-Run on (2 X 2893.43 MHz CPU s)
-2016-01-14 22:44:21
-Benchmark                              Time(ns)      CPU(ns)   Iterations
-------------------------------------------------------------------------
+|---------------------------------------------------------------------------|
+|            |                     Time in ns                               |
+| Container  |--------------------------------------------------------------|
+|    size    |      std::vector |    PolyContainer | ContiguousPolyContainer|
+|------------|--------------------------------------------------------------|
+|         16 |              983 |            1,255 |              964       |
+|         64 |            2,458 |            2,174 |            1,281       |
+|        512 |           14,984 |            9,817 |            3,368       |
+|         4k |          113,140 |           46,143 |           15,400       |
+|        32k |        1,061,995 |          716,675 |          133,314       |
+|       256k |        8,981,431 |       13,444,367 |        1,011,531       |
+|      1024k |       38,703,833 |       70,370,333 |        4,152,715       |
+|---------------------------------------------------------------------------|
 
-std_vector/32                             1,939        1,850      333343
-std_vector/64                             3,184        3,045      238641
-std_vector/512                           17,051       17,415       39622
-std_vector/4k                           130,212      128,483        5526
-std_vector/32k                        1,241,313    1,299,857         677
-std_vector/256k                      11,101,877   11,129,129          62
-std_vector/1024k                     43,868,154   43,541,500          16
-
-polycontainer_pointers/32                 1,883        1,731      446810
-polycontainer_pointers/64                 2,665        2,179      344261
-polycontainer_pointers/512               12,354       12,934       72417
-polycontainer_pointers/4k                69,895       69,079       13125
-polycontainer_pointers/32k              933,672      942,864         700
-polycontainer_pointers/256k          16,027,895   16,287,864          44
-polycontainer_pointers/1024k         75,466,728   75,333,300          10
-
-polycontainer_contiguous/32               1,710        1,489      355924
-polycontainer_contiguous/64               1,947        1,750      396228
-polycontainer_contiguous/512              4,406        4,265      157893
-polycontainer_contiguous/4k              21,310       21,809       35000
-polycontainer_contiguous/32k            155,236      157,670        4038
-polycontainer_contiguous/256k         1,352,541    1,249,984         568
-polycontainer_contiguous/1024k        5,031,790    5,080,621         124
 ```
 
 Branch and cache misses:
 ```
---------------------------------------------------------------------------
-branch-misses
-            size      std::vector    PolyContainer ContiguousPolyContainer
---------------------------------------------------------------------------
-             100           20,443           20,624           20,891
-           1,000           22,863           21,930           21,751
-          10,000           46,082           36,148           29,883
-         100,000          273,946          110,618          106,999
-       1,000,000        2,542,425          909,713          872,826
-      10,000,000       25,290,224        8,581,679        8,436,820
+|-------------------------------------------------------------------------|
+|               |                    branch-misses                        |
+|   Container   |---------------------------------------------------------|
+|        size   |   std::vector |  PolyContainer | ContiguousPolyContainer|
+|---------------|---------------------------------------------------------|
+|         100   |        20,443 |         20,624 |           20,891       |
+|       1,000   |        22,863 |         21,930 |           21,751       |
+|      10,000   |        46,082 |         36,148 |           29,883       |
+|     100,000   |       273,946 |        110,618 |          106,999       |
+|   1,000,000   |     2,542,425 |        909,713 |          872,826       |
+|  10,000,000   |    25,290,224 |      8,581,679 |        8,436,820       |
+|-------------------------------------------------------------------------|
 
---------------------------------------------------------------------------
-cache-misses
-            size      std::vector    PolyContainer ContiguousPolyContainer
---------------------------------------------------------------------------
-             100            7,737            7,913            7,692
-           1,000            8,665            9,965            5,844
-          10,000           10,926           11,759            6,344
-         100,000           21,987          131,276           11,534
-       1,000,000          227,564        2,012,023           59,739
-      10,000,000        2,672,828       19,703,591          466,345
+
+|-------------------------------------------------------------------------|
+|               |                    cache-misses                         |
+|   Container   |---------------------------------------------------------|
+|        size   |   std::vector |  PolyContainer | ContiguousPolyContainer|
+|--------------------------------------------------------------------------
+|         100   |         7,737 |          7,913 |           7,692        |
+|       1,000   |         8,665 |          9,965 |           5,844        |
+|      10,000   |        10,926 |         11,759 |           6,344        |
+|     100,000   |        21,987 |        131,276 |          11,534        |
+|   1,000,000   |       227,564 |      2,012,023 |          59,739        |
+|  10,000,000   |     2,672,828 |     19,703,591 |         466,345        |
+|-------------------------------------------------------------------------|
 ```
 
 `ContiguousPolyContainer` appears to be easily the fastest, and seems scale linearly with the number of elements.
