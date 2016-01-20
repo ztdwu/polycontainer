@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../contiguous-polycontainer.hpp"
 #include "../polycontainer.hpp"
 
