@@ -55,8 +55,9 @@ public:
         insert<D2>(container);
         insert<D3>(container);
 
+        const auto container_const = std::move(container);
         auto seen = std::vector<int>{ };
-        container.for_each([&seen](const auto &item) {
+        container_const.for_each([&seen](const auto &item) {
             seen.push_back(item.get());
         });
 

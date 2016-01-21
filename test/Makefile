@@ -1,14 +1,16 @@
-CC = clang++
+CC = g++
 
-DEFAULT_FLAGS = -std=c++14 -MMD -MP
+DEFAULT_FLAGS  = -std=c++14 -MMD -MP -coverage -ftest-coverage
 
-WARNINGS      = -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wformat=2 -Wformat-nonliteral \
-		        -Wmissing-format-attribute -Wnon-virtual-dtor -Wsign-conversion
-DEBUG         = -g -fno-optimize-sibling-calls -fno-omit-frame-pointer \
-		        -fno-strict-aliasing -fstack-protector-all -fwrapv -fPIC
-ASAN          = -fsanitize=address -fsanitize=null -fsanitize=undefined
+LINKER_OPTIONS = -lgcov --coverage
 
-FLAGS         = $(DEFAULT_FLAGS) $(INCLUDE) $(WARNINGS) $(DEBUG) $(ASAN)
+WARNINGS       = -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wformat=2 -Wformat-nonliteral \
+		         -Wmissing-format-attribute -Wnon-virtual-dtor -Wsign-conversion
+DEBUG          = -g -fno-optimize-sibling-calls -fno-omit-frame-pointer \
+		         -fno-strict-aliasing -fstack-protector-all -fwrapv -fPIC
+ASAN           = -fsanitize=address -fsanitize=null -fsanitize=undefined
+
+FLAGS          = $(DEFAULT_FLAGS) $(INCLUDE) $(WARNINGS) $(DEBUG) $(ASAN)
 
 
 BUILD_DIR = .build

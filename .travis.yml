@@ -11,17 +11,24 @@ addons:
             - clang-3.7
             - g++-5
 
+before_install:
+    - pip install --user codecov
+    - sudo apt-get -y install ggcov
+
 install:
+    - sudo update-alternatives --install $(which gcov)    gcov    $(which gcov-5)      100
     - sudo update-alternatives --install $(which g++)     g++     $(which g++-5)       100
     - sudo update-alternatives --install $(which clang++) clang++ $(which clang++-3.6) 100
-    - g++ -v
-    - clang++ -v
 
 script:
     - cd test/
     - ./download-dependencies.sh
     - make
     - ./test
+
+after_success:
+    - cp .build/* .
+    - codecov
 
 notifications:
     email:
