@@ -1,7 +1,9 @@
 # PolyContainer [![Build Status](https://travis-ci.org/ztdwu/polycontainer.svg?branch=master)](https://travis-ci.org/ztdwu/polycontainer)
 Containers of polymorphic types can often be slow to iterate because the processor has to branch-predict which virtual function implementation to call. As well, polymorphics types are usually stored non-contiguously through pointers, which is severely cache-unfriendly as it hampers the processor's ability to predict and prefetch the next block of data. PolyContainer is a container based on the ideas in an excellent [blog post](http://bannalia.blogspot.ca/2014/05/fast-polymorphic-collections.html) (a must read) by Joaquín M López Muñoz. It stores objects of each derived type contiguously in its own bucket.
 
-In addition to the contiguous polymorphic container (ContinuousPolyContainer), there's also a non-contiguous version (PolyContainer) which, instead of laying out objects next to each other in memory, stores smart pointers to these objects. This allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly (up to a certain size, see below), but loses the huge benefit of cache locality.
+This library offers two types of containers: `ContinuousPolyContainer` and `PolyContainer`.
+- `ContinuousPolyContainer` lays out each object contiguously in memory, offering the best cache locality as well as branch predictability. 
+- `PolyContainer` holds smart pointers to each element in the container, which loses the huge benefit of cache locality (and can be quite slow for large container sizes, see benchmarks below). However, this allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly.
 
 ## Benchmarks (linear iteration):
 These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 2400.09 MHz CPU s)
