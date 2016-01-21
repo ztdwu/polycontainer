@@ -1,4 +1,4 @@
-# PolyContainer [![Build Status](https://travis-ci.org/ztdwu/polycontainer.svg?branch=master)](https://travis-ci.org/ztdwu/polycontainer)
+# PolyContainer [![Build Status](https://travis-ci.org/ztdwu/polycontainer.svg?branch=master)](https://travis-ci.org/ztdwu/polycontainer) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE?raw=true)
 Containers of polymorphic types can often be slow to iterate because the processor has to branch-predict which virtual function implementation to call. As well, polymorphics types are usually stored non-contiguously through pointers, which is severely cache-unfriendly as it hampers the processor's ability to predict and prefetch the next block of data. PolyContainer is a container based on the ideas in an excellent [blog post](http://bannalia.blogspot.ca/2014/05/fast-polymorphic-collections.html) (a must read) by Joaquín M López Muñoz. It stores objects of each derived type contiguously in its own bucket.
 
 This library offers two types of containers: `ContinuousPolyContainer` and `PolyContainer`.
