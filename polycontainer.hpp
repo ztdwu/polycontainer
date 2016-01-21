@@ -48,7 +48,7 @@ public:
 
     template <typename Derived>
     auto& get_segment() {
-        static_assert(std::is_base_of<Base, Derived>::value,
+        static_assert(std::is_base_of<Base, std::decay_t<Derived>>::value,
                       "Cannot insert an object that does not derive from the base.");
 
         return segments[typeid(Derived)];

@@ -37,7 +37,7 @@ private:
 public:
     template <typename Derived>
     auto& push_back(Derived &&d) {
-        auto &segment = get_segment<std::remove_reference_t<Derived>>();
+        auto &segment = get_segment<std::decay_t<Derived>>();
         segment.push_back(std::forward<Derived>(d));
         return segment.back();
     }
