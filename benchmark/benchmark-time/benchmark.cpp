@@ -26,8 +26,8 @@ const auto std_vector_              = run_benchmark<StdVectorContainer>;
 const auto PolyContainer_           = run_benchmark<PolyContainer>;
 const auto ContiguousPolyContainer_ = run_benchmark<ContiguousPolyContainer>;
 
-BENCHMARK(std_vector_)             ->Range(min, max);
-BENCHMARK(PolyContainer_)          ->Range(min, max);
-BENCHMARK(ContiguousPolyContainer_)->Range(min, max);
+BENCHMARK(std_vector_)             ->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000);
+BENCHMARK(PolyContainer_)          ->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000);
+BENCHMARK(ContiguousPolyContainer_)->Arg(100)->Arg(1000)->Arg(10000)->Arg(100000)->Arg(1000000)->Arg(10000000);
 
 BENCHMARK_MAIN()
