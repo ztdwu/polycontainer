@@ -27,7 +27,7 @@ public:
 public:
     template <typename Derived>
     auto& push_back(std::unique_ptr<Derived> item) {
-        auto &vec = get_segment<Derived>();
+        auto &vec = get_segment<std::decay_t<Derived>>();
         vec.push_back(std::move(item));
         return vec.back();
     }
@@ -48,7 +48,7 @@ public:
 
     template <typename Derived>
     auto& get_segment() {
-        static_assert(std::is_base_of<Base, std::decay_t<Derived>>::value,
+        static_assert(std::is_base_of<Base, Derived>::value,
                       "Cannot insert an object that does not derive from the base.");
 
         return segments[typeid(Derived)];
