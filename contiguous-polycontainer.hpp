@@ -97,9 +97,7 @@ private:
         virtual ~SegmentI() = default;
 
         virtual auto len() const -> size_t = 0;
-
-        virtual void for_each(const std::function<void(Base &)> &)       = 0;
-        virtual void for_each(const std::function<void(Base &)> &) const = 0;
+        virtual void for_each(const std::function<void(Base &)> &) = 0;
     };
 
     /** Segment impl must be separated from its interface
@@ -119,10 +117,6 @@ private:
             for ( auto &item : vec ) {
                 f(item);
             }
-        }
-
-        void for_each(const std::function<void(Base &)> &f) const override {
-            const_cast<Segment<Derived> &>(*this).for_each(f);
         }
 
     public:
