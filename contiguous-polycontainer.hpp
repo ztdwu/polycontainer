@@ -14,20 +14,23 @@ namespace polycontainer {
 template <typename Base>
 class ContiguousPolyContainer {
 
-/** Forward declaration of storage classes */
-private:
-    class SegmentI;
-    template <typename Derived> class Segment;
-
 
 /** ctors and dtor*/
 public:
     ContiguousPolyContainer() noexcept = default;
     ~ContiguousPolyContainer()         = default;
 
-    ContiguousPolyContainer(ContiguousPolyContainer &&) noexcept        = default;
+    ContiguousPolyContainer(ContiguousPolyContainer &&) noexcept            = default;
+    ContiguousPolyContainer& operator=(ContiguousPolyContainer &&) noexcept = default;
+
     ContiguousPolyContainer(const ContiguousPolyContainer &)            = delete;
     ContiguousPolyContainer& operator=(const ContiguousPolyContainer &) = delete;
+
+
+/** Forward declaration of storage classes */
+private:
+    class SegmentI;
+    template <typename Derived> class Segment;
 
 
 /** Public methods for insertion and iteration */
