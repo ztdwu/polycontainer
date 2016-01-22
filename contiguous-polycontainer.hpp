@@ -67,7 +67,7 @@ public:
 
         auto &segment = segments[typeid(Derived)];
         if ( !segment ) {
-            segment.reset(new Segment<Derived>);
+            segment = std::make_unique<Segment<Derived>>();
         }
         return static_cast<Segment<Derived> &>(*segment).vec;
     }
