@@ -27,7 +27,7 @@ auto &inserted = container.push_back(item);
 container.for_each([](auto &item) { });
 
 // returns a reference to the underlying vector that holds all items of DerivedType
-auto &segment container.get_segment<DerivedType>();
+auto &segment = container.get_segment<DerivedType>();
 
 // returns the total number of items in the container
 const auto len = container.len();
