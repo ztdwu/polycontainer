@@ -62,3 +62,23 @@ TEST_CASE( "contiguous by ref push_back", "[ContiguousPolyContainer]" ) {
     const auto &vec = container.get_segment<D1>();
     REQUIRE( vec.size() == container.len() );
 }
+
+TEST_CASE( "contiguous push_back exception", "[ContiguousPolyContainer]" ) {
+    struct DerivedFromDerived : D1 { };
+
+    auto container = ContiguousPolyContainer<Base>{ };
+    {
+        auto item = DerivedFromDerived{ };
+        REQUIRE_NOTHROW( container.push_back(item) );
+
+        D1 &ref = item;
+        REQUIRE_THROWS_AS( container.push_back(ref), ContiguousPolyContainer<Base>::BadDerivedTypeException );
+    }
+    {
+        const auto item = DerivedFromDerived{ };
+        REQUIRE_NOTHROW( container.push_back(item) );
+
+        const D1 &ref = item;
+        REQUIRE_THROWS_AS( container.push_back(ref), ContiguousPolyContainer<Base>::BadDerivedTypeException );
+    }
+}

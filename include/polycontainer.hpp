@@ -34,7 +34,7 @@ public:
 
     template <typename Func>
     void for_each(const Func &f) {
-        for ( auto &keyval : segments ) {
+        for ( auto &keyval : segments_ ) {
             for ( auto &item : keyval.second ) {
                 f(*item);
             }
@@ -49,28 +49,28 @@ public:
     template <typename Derived>
     auto& get_segment() {
         static_assert(std::is_base_of<Base, Derived>::value,
-                      "Cannot insert an object that does not derive from the base.");
+            "The function template argument must derive from the class template argument.");
 
-        return segments[typeid(Derived)];
+        return segments_[typeid(Derived)];
     }
 
     auto len() const {
         size_t length = 0u;
-        for ( const auto &keyval : segments ) {
+        for ( const auto &keyval : segments_ ) {
             length += keyval.second.size();
         }
         return length;
     }
 
     void clear() {
-        segments.clear();
+        segments_.clear();
     }
 
 
 /** Data members */
 private:
     using Segment = std::vector<std::unique_ptr<Base>>;
-    std::unordered_map<std::type_index, Segment> segments;
+    std::unordered_map<std::type_index, Segment> segments_;
 };
 
 }
