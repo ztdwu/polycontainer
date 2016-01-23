@@ -81,4 +81,11 @@ TEST_CASE( "contiguous push_back exception", "[ContiguousPolyContainer]" ) {
         const D1 &ref = item;
         REQUIRE_THROWS_AS( container.push_back(ref), ContiguousPolyContainer<Base>::BadDerivedTypeException );
     }
+    {
+        const auto item = DerivedFromDerived{ };
+        REQUIRE_NOTHROW( container.push_back(item) );
+
+        const D1 *const ptr = &item;
+        REQUIRE_THROWS_AS( container.push_back(*ptr), ContiguousPolyContainer<Base>::BadDerivedTypeException );
+    }
 }

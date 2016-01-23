@@ -4,7 +4,7 @@ DEFAULT_FLAGS  = -std=c++14 -MMD -MP -coverage -ftest-coverage
 
 LINKER_OPTIONS = -lgcov --coverage
 
-INCLUDE        = -I../include
+INCLUDE        = -I../include -I./
 
 WARNINGS       = -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wformat=2 -Wformat-nonliteral \
 		         -Wmissing-format-attribute -Wnon-virtual-dtor -Wsign-conversion
