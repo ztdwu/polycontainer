@@ -21,19 +21,24 @@ The non-contiguous `PolyContainer` is a significantly faster than `std::vector` 
 ## Mini Documentation:
 ```c++
 // inserts and returns a reference to the inserted value
-container.push_back(item);
+auto &inserted = container.push_back(item);
 
 // calls the lambda for each item in the container
 container.for_each([](auto &item) { });
 
 // returns a reference to the underlying vector that holds all items of DerivedType
-container.get_segment<DerivedType>();
+auto &segment container.get_segment<DerivedType>();
 
 // returns the total number of items in the container
-container.len();
+const auto len = container.len();
 
 // removes all items
 container.clear();
+
+// TODO:
+container.erase(it);
+container.begin(); // begin, cbegin, rbegin, crbegin
+container.end();   // end, cend, rend, crend
 ```
 
 ## Example:
