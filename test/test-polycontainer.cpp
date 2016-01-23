@@ -1,9 +1,9 @@
 #include "test-polycontainer.h"
 #include "test-shared.h"
 
-#include "../polycontainer.hpp"
+#include <polycontainer.hpp>
 
-#include "catch.hpp"
+#include <catch.hpp>
 
 
 using Tester = Test<PolyContainer<Base>>;

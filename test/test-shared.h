@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../contiguous-polycontainer.hpp"
-#include "../polycontainer.hpp"
+#include <contiguous-polycontainer.hpp>
+#include <polycontainer.hpp>
 
 #include <algorithm>
 #include <vector>
 
-#include "catch.hpp"
+#include <catch.hpp>
 
 
 using polycontainer::PolyContainer;

@@ -1,7 +1,6 @@
-#include "contiguous-polycontainer.hpp"
-#include "polycontainer.hpp"
-
-#include "../object-factory.h"
+#include <contiguous-polycontainer.hpp>
+#include <polycontainer.hpp>
+#include <object-factory.h>
 
 template <typename Container>
 void cache_test(const int size) {

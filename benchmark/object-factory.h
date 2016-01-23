@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../contiguous-polycontainer.hpp"
-#include "../polycontainer.hpp"
+#include <contiguous-polycontainer.hpp>
+#include <polycontainer.hpp>
 
 #include <algorithm>
 #include <cassert>

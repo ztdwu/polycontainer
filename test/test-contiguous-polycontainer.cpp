@@ -1,9 +1,9 @@
 #include "test-contiguous-polycontainer.h"
 #include "test-shared.h"
 
-#include "../contiguous-polycontainer.hpp"
+#include <contiguous-polycontainer.hpp>
 
-#include "catch.hpp"
+#include <catch.hpp>
 
 
 using Tester = Test<ContiguousPolyContainer<Base>>;

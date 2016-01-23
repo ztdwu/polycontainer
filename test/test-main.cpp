@@ -4,4 +4,4 @@
 #include "test-contiguous-polycontainer.h"
 
 // Requires the Catch framework https://github.com/philsquared/Catch
-#include "catch.hpp"
+#include <catch.hpp>

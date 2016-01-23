@@ -6,7 +6,7 @@ LIBRARY        = dependencies/google-benchmark-framework/build
 
 LINKER_OPTIONS = -lpthread $(LIBRARY)/lib/libbenchmark.a -flto -fuse-ld=gold -O3
 
-INCLUDE        = -I$(LIBRARY)/include -I../ -I../../
+INCLUDE        = -I$(LIBRARY)/include -I../ -I../../include
 
 WARNINGS       = -Wall -Wextra -pedantic -Wcast-align -Wconversion -Wformat=2 -Wformat-nonliteral \
 		        -Wmissing-format-attribute -Wnon-virtual-dtor -Wsign-conversion
