@@ -8,6 +8,8 @@ This library offers two types of containers: `ContinuousPolyContainer` and `Poly
 - `ContinuousPolyContainer` lays out each object contiguously in memory, offering the best cache locality as well as branch predictability. 
 - `PolyContainer` holds smart pointers to each element in the container, which loses the huge benefit of cache locality (and can be quite slow for large container sizes, see benchmarks below). However, this allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly.
 
+---
+
 ## Benchmarks (linear iteration)
 These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 2400.09 MHz CPU s)
 
@@ -17,6 +19,7 @@ These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 240
 
 The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution.
 
+---
 
 ## Usage
 
@@ -65,6 +68,8 @@ container.end();   // end, cend, rend, crend
 container.erase(iter);
 ```
 
+---
+
 ## Limitations
 There is an unfortunate (and necessary) limitation in the `ContiguousPolyContainer` class (which unfortunately isn't mentioned in the linked blog post above, even though it shares the same limitation). Consider the following signiture for `ContiguousPolyContainer::push_back`:
 ```c++
@@ -78,6 +83,8 @@ Base &ref = item;
 container.push_back(ref);
 ```
 In this case, C++'s template type deduction will resolve the template argument `typename D` to `Base` rather than `Derived` (ref removed for simplicity). This, in turn, will insert an item of type `Derived` into a vector of type `std::vector<Base>` (assuming Base is non-pure-virtual), which will cause slicing. As a result, all items must be referenced by their dynamic type rather than base type when being inserted into `ContiguousPolyContainer`, otherwise the exception `BadDerivedTypeException` will be thrown.
+
+---
 
 ## Running the tests
 unit tests:
