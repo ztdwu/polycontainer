@@ -18,55 +18,51 @@ These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 240
 The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution.
 
 
-## Mini Documentation:
+## Usage:
+
+Constructs an empty container
 ```c++
-// inserts and returns a reference to the inserted value
-auto &inserted = container.push_back(item);
-
-// calls the lambda for each item in the container
-container.for_each([](auto &item) { });
-
-// returns a reference to the underlying vector that holds all items of DerivedType
-auto &segment = container.get_segment<DerivedType>();
-
-// returns the total number of items in the container
-const auto len = container.len();
-
-// removes all items
-container.clear();
-
-// TODO:
-container.erase(it);
-container.begin(); // begin, cbegin, rbegin, crbegin
-container.end();   // end, cend, rend, crend
+auto container1 = ContiguousPolyContainer<Base>{ };
+auto container2 = PolyContainer<Base>{ };
 ```
 
-## Example:
+Inserts and returns a reference to the inserted value
 ```c++
-#include "polycontainer.hpp"
-#include <iostream>
-using polycontainer::ContiguousPolyContainer;
+auto &inserted = container.push_back(item);              // ContiguousPolyContainer, insert by lvalue ref
+auto &inserted = container.push_back(std::move(item));   // ContiguousPolyContainer, insert by rvalue ref
+auto &inserted = container.push_back(DerivedType{ });    // ContiguousPolyContainer, insert by rvalue ref
 
-struct Base {
-    virtual ~Base() { }
-    virtual int compute() const = 0;
-};
+auto &inserted = container.push_back(std::move(my_unique_ptr));        // PolyContainer, insert by rvalue ref
+auto &inserted = container.push_back(std::make_unique<DerivedType>()); // PolyContainer, insert by rvalue ref
+```
 
-struct D1 : Base { int compute() const override { return 1; } };
-struct D2 : Base { int compute() const override { return 2; } };
-// ...
+Calls the lambda for each item in the container
+```c++
+container.for_each([](auto &item) { });
+```
 
-int main() {
-    auto container = ContiguousPolyContainer<Base>{ };
-    container.push_back(D1{ });
-    container.push_back(D2{ });
-    // container.push_back(std::make_unique<D2>()); for the non-contiguous PolyContainer
-    // ...
+Returns a reference to the underlying vector that holds all items of DerivedType
+```c++
+auto &segment = container.get_segment<DerivedType>();
+// Return type is std::vector<DerivedType> for ContiguousPolyContainer
+// and std::vector<std::unique_ptr<Base>> for PolyContainer
+```
 
-    container.for_each([](const Base &item) {
-        std::cout << item.compute() << std::endl;
-    });
-}
+Returns the total number of items in the container
+```c++
+const auto len = container.len();
+```
+
+Removes all items
+```c++
+container.clear();
+```
+
+TODO:
+```c++
+container.begin(); // begin, cbegin, rbegin, crbegin
+container.end();   // end, cend, rend, crend
+container.erase(iter);
 ```
 
 ## Running the tests
