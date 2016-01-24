@@ -74,7 +74,7 @@ container.erase(iter);
 There is an unfortunate (and necessary) limitation in the `ContiguousPolyContainer` class (which unfortunately isn't mentioned in the linked blog post above, even though it shares the same limitation). Consider the following signiture for `ContiguousPolyContainer::push_back`:
 ```c++
 template <typename D>
-auto& push_back(D &&d);
+D& push_back(D &&d);
 ```
 And if we were to use `push_back` like this:
 ```c++
