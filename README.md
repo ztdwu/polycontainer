@@ -2,13 +2,13 @@
 [![codecov.io](https://codecov.io/github/ztdwu/polycontainer/coverage.svg?branch=master)](https://codecov.io/github/ztdwu/polycontainer?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE?raw=true) 
 # PolyContainer 
-Containers of polymorphic types can often be slow to iterate because the processor has to branch-predict which virtual function implementation to call. As well, polymorphics types are usually stored non-contiguously through pointers, which is severely cache-unfriendly as it hampers the processor's ability to predict and prefetch the next block of data. PolyContainer is a container based on the ideas in an excellent [blog post](http://bannalia.blogspot.ca/2014/05/fast-polymorphic-collections.html) (a must read) by Joaquín M López Muñoz. It stores objects of each derived type contiguously in its own bucket.
+Containers of polymorphic types can often be slow to iterate because the processor has to branch-predict which virtual function implementation to call. As well, polymorphics types are usually stored non-contiguously through pointers, which is severely cache-unfriendly as it hampers the processor's ability to predict and prefetch the next block of data. This library providers a container based on the ideas in an excellent [blog post](http://bannalia.blogspot.ca/2014/05/fast-polymorphic-collections.html) (a must read) by Joaquín M López Muñoz. It stores objects of each derived type contiguously in its own bucket.
 
 This library offers two types of containers: `ContinuousPolyContainer` and `PolyContainer`.
 - `ContinuousPolyContainer` lays out each object contiguously in memory, offering the best cache locality as well as branch predictability. 
 - `PolyContainer` holds smart pointers to each element in the container, which loses the huge benefit of cache locality (and can be quite slow for large container sizes, see benchmarks below). However, this allows for easier deletions of individual objects in the container while retaining the benefits of being branch-predictor friendly.
 
-## Benchmarks (linear iteration):
+## Benchmarks (linear iteration)
 These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 2400.09 MHz CPU s)
 
 ![Benchmarks Graph](/benchmark/benchmarks.png?raw=true)
@@ -18,7 +18,7 @@ These microbenchmarks are compiled with Clang 3.6 on Linux 4.3.3 x86_64 (8 X 240
 The non-contiguous `PolyContainer` is a significantly faster than `std::vector` up until around 32k elements, after which its performance starts to degrade severely due to a high number of cache misses (even more than `std::vector`!), so use with caution.
 
 
-## Usage:
+## Usage
 
 Constructs an empty container
 ```c++
@@ -64,6 +64,20 @@ container.begin(); // begin, cbegin, rbegin, crbegin
 container.end();   // end, cend, rend, crend
 container.erase(iter);
 ```
+
+## Limitations
+There is an unfortunate (and necessary) limitation in the `ContiguousPolyContainer` class (which unfortunately isn't mentioned in the linked blog post above, even though it shares the same limitation). Consider the following signiture for `ContiguousPolyContainer::push_back`:
+```c++
+template <typename D>
+auto& push_back(D &&d);
+```
+And if we were to use `push_back` like this:
+```c++
+auto item = Derived{ };
+Base &ref = item;
+container.push_back(ref);
+```
+In this case, C++'s template type deduction will resolve the template argument `typename D` to `Base` rather than `Derived` (ref removed for simplicity). This, in turn, will insert an item of type `Derived` into a vector of type `std::vector<Base>` (assuming Base is non-pure-virtual), which will cause slicing. As a result, all items must be referenced by their dynamic type rather than base type when being inserted into `ContiguousPolyContainer`, otherwise the exception `BadDerivedTypeException` will be thrown.
 
 ## Running the tests
 unit tests:
